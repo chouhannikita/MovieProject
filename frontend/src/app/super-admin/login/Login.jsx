@@ -3,6 +3,7 @@ import { superAdminRegisterApi } from "@/api/register/register";
 import FormInput from "@/components/Form-Input/FormInput";
 import CustomButton from "@/components/custom-button/CustomButton";
 import { useSnackbar } from "@/context/SnackbarContext";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 export default function SuperAdminLogin() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export default function SuperAdminLogin() {
   });
 
   const { showSnackbar } = useSnackbar();
+  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +27,7 @@ export default function SuperAdminLogin() {
     console.log(res);
     if (res.status === 200) {
       showSnackbar("Login successful!", "success");
+      router.push("/super-admin/dashboard");
     } else {
       showSnackbar(res?.response?.data?.message, "error");
     }

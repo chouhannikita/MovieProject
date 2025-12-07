@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SnackbarProvider } from "@/context/SnackbarContext";
+import AppLayout from "./AppLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,14 +20,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <SnackbarProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
-      </html>
-    </SnackbarProvider>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <SnackbarProvider>
+          <AppLayout>
+            {children}
+          </AppLayout>
+        </SnackbarProvider>
+      </body>
+    </html>
   );
 }
