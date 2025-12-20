@@ -4,3 +4,8 @@ export const superAdminRegisterApi = async (data) => {
   const res = await apiCall("/super-admin/login", "POST", data);
   return res;
 };
+
+export const sendOtpApi = async (data) => {
+  const res = await apiCall("/otp/send", "POST", data);
+  return res;
+}

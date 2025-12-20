@@ -1,21 +1,24 @@
 import Otp from "../models/OtpModel.js";
 import { generateTempToken } from "../utils/generateJwt.js";
+import { sendOtpEmail } from "../utils/sendOtpEmails.js";
 
 export const sendOtp = async (req, res) => {
   try {
-    const { phone } = req.body;
+    const { email } = req.body;
 
-    if (!phone) {
+    if (!email) {
       return res.status(400).json({ message: "Phone is required" });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
 
     await Otp.create({
-      phone,
+      email,
       otp,
       expiresAt: Date.now() + 2 * 60 * 1000,
     });
+
+    await sendOtpEmail(email, otp);
 
     return res.json({ message: "OTP sent", otp });
   } catch (error) {

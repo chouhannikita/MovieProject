@@ -6,7 +6,7 @@ import ThemeRegistry from '@/theme/ThemeRegistry'
 const AppLayout = ({children}) => {
   return (
    <ThemeRegistry>
-     <Header/>
+     {/* <Header/> */}
      {children}
    </ThemeRegistry>
   )
