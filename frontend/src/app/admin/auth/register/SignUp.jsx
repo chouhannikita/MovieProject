@@ -3,8 +3,12 @@
 import Image from "next/image";
 import LeftLayout from "./LeftLayout";
 import SentOTP from "./SentOTP";
+import { useState } from "react";
+import VerifyOTP from "./VerifyOTP";
 
 export default function Signup() {
+  const [tab, setTab] = useState(1);
+  const [email, setEmail] = useState("");
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-gray-100">
@@ -20,7 +24,11 @@ export default function Signup() {
               height={40}
             />
           </div>
-          <SentOTP />
+          {tab === 1 ? (
+            <SentOTP setTab={setTab} email={email} setEmail={setEmail} />
+          ) : (
+            <VerifyOTP setTab={setTab} email={email} />
+          )}
           <hr className="my-6" />
           <p className="text-center text-sm text-gray-700">
             Already have an account?{" "}

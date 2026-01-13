@@ -9,3 +9,8 @@ export const sendOtpApi = async (data) => {
   const res = await apiCall("/otp/send", "POST", data);
   return res;
 }
+
+export const verifyOtpApi = async (data) => {
+  const res = await apiCall("/otp/verify", "POST", data);
+  return res;
+}

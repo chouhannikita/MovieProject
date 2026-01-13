@@ -4,8 +4,7 @@ import CustomButton from "@/components/custom-button/CustomButton";
 import { useSnackbar } from "@/context/SnackbarContext";
 import React, { useState } from "react";
 
-const SentOTP = () => {
-    const [email, setEmail] = useState("");
+const SentOTP = ({setTab,email,setEmail}) => {
     const [loader, setLoader] = useState(false);
     const { showSnackbar } = useSnackbar();
   
@@ -19,11 +18,13 @@ const SentOTP = () => {
       const res = await sendOtpApi({ email: email });
       if (res?.status === 200) {
         showSnackbar("OTP sent successfully", "success");
+        setTab(2)
       } else {
         showSnackbar("Failed to send OTP", "error");
       }
       setLoader(false);
     };
+
   return (
     <form onSubmit={handleOtp}>
       <FormInput
