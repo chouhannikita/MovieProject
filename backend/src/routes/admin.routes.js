@@ -1,6 +1,8 @@
 import { Router } from "express"
-import { registerAdmin } from "../controllers/admin.controller";
+import { registerAdmin } from "../controllers/admin.controller.js";
 
-const router = Router()
-router.get("/admin", (req, res) => { })
-router.post("/admin/register", registerAdmin);
+const adminRouter = Router()
+adminRouter.get("/admin", (req, res) => { })
+adminRouter.post("/register", registerAdmin);
+
+export default adminRouter;
