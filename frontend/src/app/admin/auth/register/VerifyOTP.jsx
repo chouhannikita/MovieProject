@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { verifyOtpApi } from "@/api/register/register";
 import { useRouter } from "next/navigation";
 
-const RESEND_TIME = 15;
+const RESEND_TIME = 20;
 
 const VerifyOTP = ({ setTab, email }) => {
   const [otp, setOtp] = useState("");
