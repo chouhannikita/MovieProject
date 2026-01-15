@@ -31,7 +31,14 @@ const FormInput = ({
 };
 
 FormInput.propType = {
-  
+  label: PropTypes.string,
+  variant: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string,
+  className: PropTypes.string,
+  required: PropTypes.bool,
+  name: PropTypes.string
 }
 
 export default FormInput;

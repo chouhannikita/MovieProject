@@ -1,11 +1,45 @@
 import React from "react";
-import { TextField, Button, MenuItem } from "@mui/material";
+import { Button } from "@mui/material";
+import PropTypes from "prop-types";
+import FormInput from "@/components/FormInput";
+import {
+  BANK_FIELDS,
+  CONTACT_FIELDS,
+  ORGANISATION_FIELDS,
+} from "@/app/admin/adminConfig";
+import CustomButton from "@/components/custom-button/CustomButton";
+
+/* ---------- Reusable Input Renderer ---------- */
+
+const RenderFields = ({ fields, values, onChange, grid }) => (
+  <div className={`grid grid-cols-1 ${grid} gap-4`}>
+    {fields.map(({ label, name, type = "text", required = false }) => (
+      <FormInput
+        key={name}
+        label={label}
+        name={name}
+        type={type}
+        required={required}
+        value={values[name] || ""}
+        onChange={onChange}
+      />
+    ))}
+  </div>
+);
+
+RenderFields.propTypes = {
+  fields: PropTypes.array.isRequired,
+  values: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
+  grid: PropTypes.string,
+};
+
+/* ---------- Main Component ---------- */
 
 const GeneralInfo = ({ Section, accountInfo, setAccountInfo }) => {
   const { generalInfo } = accountInfo;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) => {
     setAccountInfo((prev) => ({
       ...prev,
       generalInfo: {
@@ -18,30 +52,19 @@ const GeneralInfo = ({ Section, accountInfo, setAccountInfo }) => {
   return (
     <>
       <Section title="Organisation Details">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextField
-            label="Organisation / Individual Name"
-            name="org_name"
-            value={generalInfo.org_name || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            label="PAN Card Number"
-            name="pan_card"
-            value={generalInfo.pan_card || ""}
-            onChange={handleChange}
-            fullWidth
-          />
-        </div>
+        <RenderFields
+          fields={ORGANISATION_FIELDS}
+          values={generalInfo}
+          onChange={handleChange}
+          grid="md:grid-cols-2"
+        />
 
         <div className="mt-4">
-          <TextField
+          <FormInput
             label="Organisation / Individual Address"
             name="org_address"
             value={generalInfo.org_address || ""}
             onChange={handleChange}
-            fullWidth
             multiline
             rows={2}
           />
@@ -49,56 +72,36 @@ const GeneralInfo = ({ Section, accountInfo, setAccountInfo }) => {
       </Section>
 
       <Section title="Contact Person Details">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <TextField
-            label="Full Name"
-            fullWidth
-            name="contact_name"
-            value={generalInfo.contact_name || ""}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Email Address"
-            fullWidth
-            name="contact_email"
-            value={generalInfo.contact_email || ""}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Mobile Number"
-            fullWidth
-            name="contact_mobile"
-            value={generalInfo.contact_mobile || ""}
-            onChange={handleChange}
-          />
-        </div>
+        <RenderFields
+          fields={CONTACT_FIELDS}
+          values={generalInfo}
+          onChange={handleChange}
+          grid="md:grid-cols-3"
+        />
       </Section>
 
       <Section title="Bank Details">
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextField label="Beneficiary Name" fullWidth />
-          <TextField select label="Account Type" fullWidth defaultValue="">
-            <MenuItem value="savings">Savings</MenuItem>
-            <MenuItem value="current">Current</MenuItem>
-          </TextField>
-        </div> */}
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <TextField select label="Bank Name" fullWidth>
-            <MenuItem value="sbi">SBI</MenuItem>
-            <MenuItem value="hdfc">HDFC</MenuItem>
-            <MenuItem value="icici">ICICI</MenuItem>
-          </TextField>
-          <TextField label="Account Number" fullWidth />
-          <TextField label="Bank IFSC" fullWidth />
-        </div>
+        <RenderFields
+          fields={BANK_FIELDS}
+          values={generalInfo}
+          onChange={handleChange}
+          grid="md:grid-cols-3"
+        />
       </Section>
 
-      <div className="flex justify-end gap-4 mt-8">
-        <Button variant="contained">Proceed</Button>
+      <div className="flex justify-end mt-8">
+        <CustomButton type="submit" variant="contained" buttonText="Proceed" />
       </div>
     </>
   );
+};
+
+GeneralInfo.propTypes = {
+  Section: PropTypes.func.isRequired,
+  accountInfo: PropTypes.shape({
+    generalInfo: PropTypes.object.isRequired,
+  }).isRequired,
+  setAccountInfo: PropTypes.func.isRequired,
 };
 
 export default GeneralInfo;

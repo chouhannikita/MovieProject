@@ -5,7 +5,6 @@ import { generateToken } from "../config/utiles.js";
 export const registerAdmin = async (req, res) => {
     try {
         const {
-            generalInfo,
             email,
             mobile,
             password,
@@ -23,27 +22,10 @@ export const registerAdmin = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const admin = await Admin.create({
+            ...req.body,
             email,
             mobile,
             password: hashedPassword,
-
-            organisation: {
-                name: generalInfo.org_name,
-                panCard: generalInfo.pan_card,
-                address: generalInfo.org_address,
-            },
-
-            contactPerson: {
-                name: generalInfo.contact_name,
-                email: generalInfo.contact_email,
-                mobile: generalInfo.contact_mobile,
-            },
-
-            bankDetails: {
-                bankName: generalInfo.bank_name,
-                accountNumber: generalInfo.account_number,
-                ifscCode: generalInfo.ifsc_code,
-            },
         });
 
         return res.status(201).json({
@@ -97,6 +79,6 @@ export const loginAdmin = async (req, res) => {
             },
         });
     } catch (error) {
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: error });
     }
 };

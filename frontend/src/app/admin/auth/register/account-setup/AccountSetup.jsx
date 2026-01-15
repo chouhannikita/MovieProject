@@ -2,11 +2,61 @@
 import React, { useState } from "react";
 import { Stepper, Step, StepLabel } from "@mui/material";
 import GeneralInfo from "./GeneralInfo";
+import { registerAdminApi } from "@/api/register/register";
+import { useSnackbar } from "@/context/SnackbarContext";
+import PropTypes from "prop-types";
 
 const steps = ["General Information", "Upload documents", "Sign agreement"];
 
 const AccountSetup = () => {
   const [accountInfo, setAccountInfo] = useState({ generalInfo: {} });
+  const { showSnackbar } = useSnackbar();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const organisationDetails = {
+      name: accountInfo.generalInfo.org_name,
+      panCard: accountInfo.generalInfo.pan_card,
+      address: accountInfo.generalInfo.org_address,
+    };
+
+    const contactPerson = {
+      name: accountInfo.generalInfo.contact_name,
+      email: accountInfo.generalInfo.contact_email,
+      mobile: accountInfo.generalInfo.contact_mobile,
+    };
+
+    const bankDetails = {
+      bankName: accountInfo.generalInfo.bank_name,
+      accountNumber: accountInfo.generalInfo.account_number,
+      ifscCode: accountInfo.generalInfo.ifsc_code,
+    };
+
+    const finalAccountInfo = {
+      organisation: organisationDetails,
+      contactPerson: contactPerson,
+      bankDetails: bankDetails,
+      role: "ADMIN",
+      password: accountInfo.generalInfo.password,
+      email: accountInfo.generalInfo.contact_email,
+      mobile: accountInfo.generalInfo.contact_mobile,
+      status: "PENDING",
+    };
+
+    const res = await registerAdminApi(finalAccountInfo);
+    if (res.status === 201) {
+      showSnackbar(
+        "Account registered successfully! Awaiting approval.",
+        "success"
+      );
+    } else {
+      showSnackbar(
+        res?.response?.data?.message || "Registration failed",
+        "error"
+      );
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10">
       <div className="w-full max-w-3xl bg-white rounded-md shadow-md p-6">
@@ -26,11 +76,13 @@ const AccountSetup = () => {
             </Step>
           ))}
         </Stepper>
-        <GeneralInfo
-          Section={Section}
-          accountInfo={accountInfo}
-          setAccountInfo={setAccountInfo}
-        />
+        <form onSubmit={handleSubmit}>
+          <GeneralInfo
+            Section={Section}
+            accountInfo={accountInfo}
+            setAccountInfo={setAccountInfo}
+          />
+        </form>
       </div>
     </div>
   );
@@ -47,3 +99,8 @@ const Section = ({ title, children }) => (
     {children}
   </div>
 );
+
+Section.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+};

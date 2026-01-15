@@ -14,3 +14,8 @@ export const verifyOtpApi = async (data) => {
   const res = await apiCall("/otp/verify", "POST", data);
   return res;
 }
+
+export const registerAdminApi = async (data) => {
+  const res = await apiCall("/admin/register", "POST", data);
+  return res;
+}
