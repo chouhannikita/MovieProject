@@ -1,13 +1,12 @@
 import React from "react";
-import { Button } from "@mui/material";
 import PropTypes from "prop-types";
-import FormInput from "@/components/FormInput";
 import {
   BANK_FIELDS,
   CONTACT_FIELDS,
   ORGANISATION_FIELDS,
 } from "@/app/admin/adminConfig";
 import CustomButton from "@/components/custom-button/CustomButton";
+import FormInput from "@/components/Form-Input/FormInput";
 
 /* ---------- Reusable Input Renderer ---------- */
 

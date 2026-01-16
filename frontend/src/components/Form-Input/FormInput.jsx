@@ -19,6 +19,7 @@ const FormInput = ({
         id="outlined-basic"
         label={label}
         variant={variant}
+        fullWidth
         value={value}
         className={className}
         onChange={onChange}

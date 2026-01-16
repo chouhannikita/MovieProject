@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ThemeRegistry from "@/theme/ThemeRegistry";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
+import ThemeRegistry from "@/theme/ThemeRegistry";
 import Header from "./header/Header";
+import Sidebar from "./sidebar/Sidebar";
 
 const HIDE_LAYOUT_PATHS = [
   "/admin/auth/login",
@@ -20,9 +21,7 @@ const AppLayout = ({ children }) => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   const shouldHideLayout = HIDE_LAYOUT_PATHS.includes(pathname);
 
@@ -32,14 +31,19 @@ const AppLayout = ({ children }) => {
 
   return (
     <ThemeRegistry>
-      <Header />
-      {children}
+      <div className="flex h-screen bg-gray-100">
+        <Sidebar />
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <Header />
+          <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        </div>
+      </div>
     </ThemeRegistry>
   );
 };
 
-export default AppLayout;
-
 AppLayout.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+export default AppLayout;
