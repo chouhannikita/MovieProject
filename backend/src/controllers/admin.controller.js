@@ -67,6 +67,13 @@ export const loginAdmin = async (req, res) => {
 
         const token = generateToken(admin);
 
+        res.cookie("admin_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
+        });
+
         return res.status(200).json({
             message: "Login successful",
             token,

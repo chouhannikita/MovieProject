@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 const Header = () => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar
         position="static"
         elevation={1}

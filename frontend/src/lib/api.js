@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-export async function apiCall(endpoint, method = "GET", data = null) {
+export async function apiCall(endpoint, method = "GET", data = null, options = {}) {
   try {
     const response = await axios({
       url: `${API}${endpoint}`,
@@ -11,6 +11,7 @@ export async function apiCall(endpoint, method = "GET", data = null) {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: options.withCredentials || false,
     });
 
     return response;

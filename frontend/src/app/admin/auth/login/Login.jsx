@@ -4,6 +4,7 @@ import { Button, Typography, CircularProgress, Paper } from "@mui/material";
 import FormInput from "@/components/Form-Input/FormInput";
 import { loginAdminApi } from "@/api/login.js/login";
 import { useSnackbar } from "@/context/SnackbarContext";
+import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -14,6 +15,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { showSnackbar } = useSnackbar();
+  const router = useRouter()
 
   const handleChange = ({ target: { name, value } }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -27,6 +29,7 @@ const Login = () => {
     const response = await loginAdminApi(form);
     if (response.status === 200) {
       showSnackbar("Login successful", "success");
+      router.push("/admin/dashboard");
     } else {
       showSnackbar(
         response?.response?.data?.message || "Login failed",
