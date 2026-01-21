@@ -65,3 +65,105 @@ export const getAdminTheatres = async (req, res) => {
     }
 };
 
+export const getTheatreById = async (req, res) => {
+    try {
+        const theatreId = req.params.id;
+
+        const theatre = await Theatre.findById(theatreId);
+        if (!theatre) {
+            return res.status(404).json({
+                message: "Theatre not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            theatre,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to fetch theatre",
+            error: error.message,
+        });
+    }
+}
+
+export const getAllTheatres = async (req, res) => {
+    try {
+        const theatres = await Theatre.find()
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                page: 1,
+                limit: 10,
+                total: theatres.length,
+                theatres: theatres
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to fetch theatres",
+            error: error.message,
+        });
+    }
+}
+
+export const deleteTheatre = async (req, res) => {
+    try {
+        const theatreId = req.params.id;
+
+        const theatre = await Theatre.findByIdAndDelete(theatreId);
+        if (!theatre) {
+            return res.status(404).json({
+                message: "Theatre not found",
+            });
+        }
+
+        return res.status(200).json({
+            message: "Theatre deleted successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to delete theatre",
+            error: error.message,
+        });
+    }
+}
+
+export const updateTheatre = async (req, res) => {
+    try {
+        const theatreId = req.params.id;
+        const { name, city, address } = req.body;
+
+        // Validate input
+        if (!name || !city || !address) {
+            return res.status(400).json({
+                message: "All fields are required",
+            });
+        }
+
+        const theatre = await Theatre.findByIdAndUpdate(
+            theatreId,
+            { name, city, address },
+            { new: true }
+        );
+
+        if (!theatre) {
+            return res.status(404).json({
+                message: "Theatre not found",
+            });
+        }
+
+        return res.status(200).json({
+            message: "Theatre updated successfully",
+            theatre,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to update theatre",
+            error: error.message,
+        });
+    }
+};
