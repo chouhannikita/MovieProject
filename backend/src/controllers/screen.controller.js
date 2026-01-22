@@ -1,125 +1,48 @@
-import Screen from "../models/screen.model.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { requireFields } from "../utils/validate.js";
+import {
+  createScreenService,
+  getScreensByTheatreService,
+  getScreenByIdService,
+  updateScreenService,
+  deleteScreenService
+} from "../services/screen.service.js";
 
-export const createScreen = async (req, res) => {   
-    try {
-        const { theatreId, name, totalSeats } = req.body;
+export const createScreen = asyncHandler(async (req, res) => {
+  requireFields(req.body, ["theatreId", "name", "totalSeats"]);
 
-        if (!theatreId || !name || !totalSeats) {
-            return res.status(400).json({
-                message: "All fields are required",
-            });
-        }
+  const screen = await createScreenService(req.body);
 
-        const screen = await Screen.create({
-            theatreId,
-            name,
-            totalSeats,
-        });
+  res.status(201).json(
+    ApiResponse(screen, "Screen created successfully")
+  );
+});
 
-        return res.status(201).json({
-            message: "Screen created successfully",
-            screen,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to create screen",
-            error: error.message,
-        });
-    }
-}
+export const getScreensByTheatre = asyncHandler(async (req, res) => {
+  const { theatreId } = req.query;
+  const screens = await getScreensByTheatreService(theatreId);
 
-export const getScreensByTheatre = async (req, res) => {
-    try {
-        const theatreId = req.query.theatreId;
+  res.json(ApiResponse(screens));
+});
 
-        const screens = await Screen.find({ theatreId });
+export const getScreenById = asyncHandler(async (req, res) => {
+  const { screenId } = req.query;
+  const screen = await getScreenByIdService(screenId);
 
-        return res.status(200).json({
-            message: "Screens fetched successfully",
-            screens,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to fetch screens",
-            error: error.message,
-        });
-    }
-}
+  res.json(ApiResponse(screen));
+});
 
-//
-export const getScreenById = async (req, res) => {
-    try {
-        const screenId = req.query.screenId;
-        console.log("Screen ID:", screenId);
+export const updateScreen = asyncHandler(async (req, res) => {
+  const { screenId } = req.query;
+  const screen = await updateScreenService(screenId, req.body);
 
-        const screen = await Screen.findById(screenId);
+  res.json(ApiResponse(screen, "Updated successfully"));
+});
 
-        if (!screen) {
-            return res.status(404).json({
-                message: "Screen not found",
-            });
-        }
+export const deleteScreen = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  await deleteScreenService(id);
 
-        return res.status(200).json({
-            message: "Screen fetched successfully",
-            screen,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to fetch screen",
-            error: error.message,
-        });
-    }
-}
-
-export const updateScreen = async (req, res) => {
-    try {
-      const { screenId } = req.query;
-      const { name, totalSeats } = req.body;
-  
-      // 2. Check screen exists
-      const screen = await Screen.findById(screenId);
-      if (!screen) {
-        return res.status(404).json({ message: "Screen not found" });
-      }
-  
-      // 3. Business validations
-      if (name) {
-        const duplicate = await Screen.findOne({
-          theatreId: screen.theatreId,
-          name,
-          _id: { $ne: screenId }
-        });
-  
-        if (duplicate) {
-          return res.status(409).json({
-            message: "Screen name already exists in this theatre"
-          });
-        }
-      }
-  
-      if (totalSeats && totalSeats <= 0) {
-        return res.status(400).json({
-          message: "totalSeats must be greater than 0"
-        });
-      }
-  
-      // 4. Update
-      if (name) screen.name = name;
-      if (totalSeats) screen.totalSeats = totalSeats;
-  
-      await screen.save();
-  
-      return res.status(200).json({
-        message: "Screen updated successfully",
-        screen
-      });
-  
-    } catch (error) {
-      return res.status(500).json({
-        message: "Failed to update screen",
-        error: error.message
-      });
-    }
-  };
-  
+  res.json(ApiResponse(null, "Deleted successfully"));
+});
