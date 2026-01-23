@@ -1,3 +1,4 @@
+'use client'
 import { TextField } from "@mui/material";
 import React from "react";
 import PropTypes from "prop-types"
@@ -10,7 +11,8 @@ const FormInput = ({
   type = "text",
   className = "",
   required=false,
-  name=""
+  name="",
+  slotProps={},
 }) => {
   return (
     <div className="mb-2">
@@ -26,6 +28,7 @@ const FormInput = ({
         type={type}
         required={required}
         name={name}
+        slotProps={{ htmlInput: slotProps }} // Updated line
       />
     </div>
   );
@@ -39,7 +42,8 @@ FormInput.propType = {
   type: PropTypes.string,
   className: PropTypes.string,
   required: PropTypes.bool,
-  name: PropTypes.string
+  name: PropTypes.string,
+  slotProps: PropTypes.object,
 }
 
 export default FormInput;

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 const CustomButton = ({
   variant = "contained",
+  fullWidth = false,
   customClass = "",
   buttonText = "",
   type = "button",
@@ -14,6 +15,7 @@ const CustomButton = ({
     <Button
       loading={loader}
       variant={variant}
+      fullWidth={fullWidth}
       className={`${customClass} p-3 rounded-lg text-lg font-semibold transition`}
       sx={sx}
       type={type}

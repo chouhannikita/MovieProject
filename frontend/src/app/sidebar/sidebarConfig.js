@@ -15,7 +15,7 @@ import {
     },
     {
       label: "Theatres",
-      path: "/admin/theatres",
+      path: "/admin/theatre",
       icon: Movie,
     },
     {
