@@ -1,9 +1,8 @@
-'use client'
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Tabs,
   Tab,
-  TextField,
   Button,
   Chip,
   Paper,
@@ -14,13 +13,18 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DownloadIcon from "@mui/icons-material/Download";
 import CustomButton from "@/components/custom-button/CustomButton";
-import FormInput from "@/components/Form-Input/FormInput";
+import dynamic from "next/dynamic";
+
+const AddTheatre = dynamic(() => import("./AddTheatre"), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+});
 
 export default function TheatreMainPage() {
+  const [open, setOpen] = useState(false);
   const theatres = [
     {
       name: "PVR Treasure Island",
@@ -44,49 +48,28 @@ export default function TheatreMainPage() {
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Tabs */}
       <Tabs value={0}>
         <Tab label="All (4)" />
         <Tab label="Active (3)" />
         <Tab label="Inactive (1)" />
       </Tabs>
 
-      {/* Add Theatre Button */}
       <div className="w-full">
-        {/* <Button
-          fullWidth
+        <CustomButton
+          fullWidth={true}
+          onClick={() => setOpen(true)}
+          variant="contained"
+          buttonText="+ Add Theatre"
           className="!text-white !py-3"
           style={{
             background: "linear-gradient(90deg,#ff004f,#ff5f00)",
           }}
-        >
-          + Add Theatre
-        </Button> */}
-        <CustomButton 
-        fullWidth={true}
-         variant="contained" 
-        buttonText="+ Add Theatre" 
-         className="!text-white !py-3"
-         style={{
-           background: "linear-gradient(90deg,#ff004f,#ff5f00)",
-         }}
         />
       </div>
 
-      {/* Search + Actions */}
+      <AddTheatre open={open} handleClose={() => setOpen(false)} />
+
       <div className="flex gap-4 items-center">
-   
-        <FormInput
-          label="Email Address"
-          name="email"
-          type="email"
-        //   value={"form.email"}
-          onChange={()=>{}}
-          required={true}
-          slotProps={{
-            startAdornment: <SearchIcon className="mr-2 text-gray-400" />,
-          }}
-        />
         <Button variant="outlined" startIcon={<FilterAltIcon />}>
           Filter
         </Button>
@@ -95,7 +78,6 @@ export default function TheatreMainPage() {
         </Button>
       </div>
 
-      {/* Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead className="bg-gray-100">

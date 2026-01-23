@@ -5,6 +5,8 @@ import FormInput from "@/components/Form-Input/FormInput";
 import { loginAdminApi } from "@/api/login.js/login";
 import { useSnackbar } from "@/context/SnackbarContext";
 import { useRouter } from "next/navigation";
+import { setAdmin } from "@/redux/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -15,7 +17,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { showSnackbar } = useSnackbar();
-  const router = useRouter()
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleChange = ({ target: { name, value } }) => {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -28,6 +31,7 @@ const Login = () => {
 
     const response = await loginAdminApi(form);
     if (response.status === 200) {
+      dispatch(setAdmin(response.data.admin));
       showSnackbar("Login successful", "success");
       router.push("/admin/dashboard");
     } else {

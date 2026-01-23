@@ -12,6 +12,7 @@ export async function apiCall(endpoint, method = "GET", data = null, options = {
         "Content-Type": "application/json",
       },
       withCredentials: options.withCredentials || false,
+      params: options.params || {},
     });
 
     return response;

@@ -4,10 +4,10 @@ import Admin from "../models/admin.model.js";
 export const createTheatre = async (req, res) => {
     try {
         const adminId = req.body.userId;
-
+        
         // 1. Check admin status
         const admin = await Admin.findById(adminId);
-        if (!admin || admin.status !== "Active") {
+        if (!admin || admin.status !== "ACTIVE") {
             return res.status(403).json({
                 message: "Admin is not approved to create theatres",
             });

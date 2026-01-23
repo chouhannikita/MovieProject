@@ -10,6 +10,7 @@ const CustomButton = ({
   type = "button",
   sx = {},
   loader = false,
+  onClick=()=>{}
 }) => {
   return (
     <Button
@@ -19,6 +20,7 @@ const CustomButton = ({
       className={`${customClass} p-3 rounded-lg text-lg font-semibold transition`}
       sx={sx}
       type={type}
+      onClick={onClick}
     >
       {buttonText}
     </Button>
