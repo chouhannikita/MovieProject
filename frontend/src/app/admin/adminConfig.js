@@ -1,3 +1,5 @@
+import { Chip } from "@mui/material";
+
 export const ORGANISATION_FIELDS = [
   {
     label: "Organisation / Individual Name",
@@ -71,4 +73,43 @@ export const theatreFormFields = [
     type: "select",
     options: ["ACTIVE", "INACTIVE"],
   },
+];
+
+export const theatreTableColumns = [
+  {
+    key: "name",
+    header: "Theatre"
+  },
+  {
+    key: "city",
+    header: "Location"
+  },
+  {
+    key: "totalScreens",
+    header: "Screens"
+  },
+  {
+    key: "totalSeats",
+    header: "Seats"
+  },
+  {
+    key: "totalShows",
+    header: "Shows",
+    render: (value) => <Chip label={value} color="primary" />
+  },
+  {
+    key: "occupancy",
+    header: "Occupancy",
+    render: (value) => (
+      <div className="flex items-center gap-2">
+        <div className="w-20 bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-green-500 h-2 rounded-full"
+            style={{ width: `${value}%` }}
+          />
+        </div>
+        <span>{value}%</span>
+      </div>
+    )
+  }
 ];

@@ -1,10 +1,11 @@
 import Theatre from "../models/theatre.model.js";
 import Admin from "../models/admin.model.js";
+import mongoose from "mongoose";
 
 export const createTheatre = async (req, res) => {
     try {
         const adminId = req.body.userId;
-        
+
         // 1. Check admin status
         const admin = await Admin.findById(adminId);
         if (!admin || admin.status !== "ACTIVE") {
@@ -45,25 +46,92 @@ export const getAdminTheatres = async (req, res) => {
     try {
         const adminId = req.user.adminId;
 
-        const theatres = await Theatre.find({ adminId })
-            .sort({ createdAt: -1 });
+        const theatres = await Theatre.aggregate([
+            {
+                $match: { adminId: new mongoose.Types.ObjectId(adminId) }
+            },
+            {
+                $lookup: {
+                    from: "screens",
+                    localField: "_id",
+                    foreignField: "theatreId",
+                    as: "screens"
+                }
+            },
+            {
+                $lookup: {
+                    from: "seats",
+                    localField: "screens._id",
+                    foreignField: "screenId",
+                    as: "seats"
+                }
+            },
+            {
+                $lookup: {
+                    from: "shows",
+                    localField: "screens._id",
+                    foreignField: "screenId",
+                    as: "shows"
+                }
+            },
+            {
+                $lookup: {
+                    from: "bookings",
+                    localField: "shows._id",
+                    foreignField: "showId",
+                    as: "bookings"
+                }
+            },
+            {
+                $addFields: {
+                    totalScreens: { $size: "$screens" },
+                    totalSeats: { $size: "$seats" },
+                    totalShows: { $size: "$shows" },
+                    occupancy: {
+                        $cond: [
+                            { $eq: [{ $size: "$seats" }, 0] },
+                            0,
+                            {
+                                $multiply: [
+                                    {
+                                        $divide: [
+                                            { $size: "$bookings" },
+                                            { $size: "$seats" }
+                                        ]
+                                    },
+                                    100
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    city: 1,
+                    address: 1,
+                    totalScreens: 1,
+                    totalSeats: 1,
+                    totalShows: 1,
+                    occupancy: { $round: ["$occupancy", 2] }
+                }
+            }
+        ]);
 
         return res.status(200).json({
             success: true,
-            data: {
-                page: 1,
-                limit: 10,
-                total: 2,
-                theatres: theatres
-            }
+            data: theatres
         });
+
     } catch (error) {
         return res.status(500).json({
             message: "Failed to fetch theatres",
-            error: error.message,
+            error: error.message
         });
     }
 };
+
 
 export const getTheatreById = async (req, res) => {
     try {

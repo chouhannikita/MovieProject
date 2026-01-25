@@ -1,22 +1,17 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Tabs,
   Tab,
   Button,
-  Chip,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DownloadIcon from "@mui/icons-material/Download";
 import CustomButton from "@/components/custom-button/CustomButton";
 import dynamic from "next/dynamic";
+import { getAdminTheatres } from "@/api/theatre.js/theatre";
+import DataTable from "@/components/datatable/DataTable";
+import { theatreTableColumns } from "../adminConfig";
 
 const AddTheatre = dynamic(() => import("./AddTheatre"), {
   ssr: false,
@@ -25,26 +20,21 @@ const AddTheatre = dynamic(() => import("./AddTheatre"), {
 
 export default function TheatreMainPage() {
   const [open, setOpen] = useState(false);
-  const theatres = [
-    {
-      name: "PVR Treasure Island",
-      location: "Indore, MP",
-      screens: 6,
-      seats: 1200,
-      shows: 24,
-      occupancy: "78%",
-      facilities: ["3D", "IMAX", "Dolby Atmos"],
-    },
-    {
-      name: "INOX Central Mall",
-      location: "Bhopal, MP",
-      screens: 4,
-      seats: 800,
-      shows: 16,
-      occupancy: "65%",
-      facilities: ["3D"],
-    },
-  ];
+  const [theatresData, setTheatresData] = useState([]);
+
+  useEffect(() => {
+    fetchTheatres();
+  }, []);
+
+  const fetchTheatres = async () => {
+    try {
+      const response = await getAdminTheatres();
+      console.log(response);
+      setTheatresData(response?.data?.data);
+    } catch (error) {
+      console.error("Error fetching theatres data:", error);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -78,53 +68,11 @@ export default function TheatreMainPage() {
         </Button>
       </div>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead className="bg-gray-100">
-            <TableRow>
-              <TableCell>Theatre</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Screens</TableCell>
-              <TableCell>Seats</TableCell>
-              <TableCell>Shows</TableCell>
-              <TableCell>Occupancy</TableCell>
-              <TableCell>Facilities</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {theatres.map((t, i) => (
-              <TableRow key={i}>
-                <TableCell className="font-semibold">{t.name}</TableCell>
-                <TableCell>{t.location}</TableCell>
-                <TableCell>{t.screens}</TableCell>
-                <TableCell>{t.seats}</TableCell>
-                <TableCell>
-                  <Chip label={t.shows} color="primary" />
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-green-500 h-2 rounded-full"
-                        style={{ width: t.occupancy }}
-                      />
-                    </div>
-                    <span>{t.occupancy}</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2 flex-wrap">
-                    {t.facilities.map((f, idx) => (
-                      <Chip key={idx} label={f} color="secondary" />
-                    ))}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <DataTable
+        columns={theatreTableColumns}
+        data={theatresData}
+        rowKey="_id"
+      />
     </div>
   );
 }
