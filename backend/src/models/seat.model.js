@@ -22,4 +22,6 @@ const seatSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+seatSchema.index({ screenId: 1 });
+
 export default mongoose.model("Seat", seatSchema);

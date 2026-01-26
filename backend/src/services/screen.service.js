@@ -1,5 +1,6 @@
 import Screen from "../models/screen.model.js";
 import ApiError from "../utils/ApiError.js";
+import Theatre from "../models/theatre.model.js";
 
 export const createScreenService = async (data) => {
   const { theatreId, name, totalSeats } = data;
@@ -9,7 +10,21 @@ export const createScreenService = async (data) => {
     throw new ApiError(409, "Screen already exists in this theatre");
   }
 
-  return Screen.create({ theatreId, name, totalSeats });
+  const screen = await Screen.create({
+    theatreId,
+    name,
+    totalSeats
+  });
+
+  // 🔥 DOMAIN SIDE EFFECT
+  await Theatre.findByIdAndUpdate(theatreId, {
+    $inc: {
+      totalScreens: 1,
+      totalSeats: totalSeats
+    }
+  });
+
+  return screen;
 };
 
 export const getScreensByTheatreService = (theatreId) => {

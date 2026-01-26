@@ -17,6 +17,8 @@ const theatreSchema = new mongoose.Schema(
       enum: ["ACTIVE", "INACTIVE"],
       default: "ACTIVE",
     },
+    totalScreens: { type: Number, default: 0 },
+    totalSeats: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

@@ -12,6 +12,7 @@ export const useAddTheatre = (onSuccess) => {
     const submit = async (data) => {
         setLoading(true);
         const adminId = auth?.userData?.id;
+        console.log(auth, "===================");
 
         const res = await addTheatre({
             ...data,
@@ -22,7 +23,7 @@ export const useAddTheatre = (onSuccess) => {
             showSnackbar("Theatre added successfully", "success");
             onSuccess?.();
         } else {
-            showSnackbar(res?.response?.data?.error || "Failed to add theatre", "error");
+            showSnackbar(res?.response?.data?.message || "Failed to add theatre", "error");
         }
         setLoading(false);
     };
