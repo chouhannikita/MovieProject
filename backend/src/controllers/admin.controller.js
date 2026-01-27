@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import Admin from "../models/admin.model.js";
-import { generateToken } from "../config/utiles.js";
+import { generateToken } from "../config/utils.js";
 
 export const registerAdmin = async (req, res) => {
     try {

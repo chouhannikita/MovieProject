@@ -1,35 +1,44 @@
 import Screen from "../models/screen.model.js";
 import ApiError from "../utils/ApiError.js";
 import Theatre from "../models/theatre.model.js";
+import { validateObjectId } from "../utils/validate.js";
+import { paginate } from "../config/pagination.js";
 
 export const createScreenService = async (data) => {
   const { theatreId, name, totalSeats } = data;
 
-  const existing = await Screen.findOne({ theatreId, name });
-  if (existing) {
-    throw new ApiError(409, "Screen already exists in this theatre");
+  validateObjectId(theatreId, "theatreId");
+
+  if(totalSeats <= 0 || !Number.isInteger(totalSeats)) {
+    throw new ApiError(400, "totalSeats must be a positive number");
   }
 
-  const screen = await Screen.create({
-    theatreId,
-    name,
-    totalSeats
-  });
+  try {
+    const screen = await Screen.create({
+      theatreId,
+      name,
+      totalSeats
+    });
+    await Theatre.findByIdAndUpdate(theatreId, {
+      $inc: {
+        totalScreens: 1,
+        totalSeats: totalSeats
+      }
+    });
+    return screen;
 
-  // 🔥 DOMAIN SIDE EFFECT
-  await Theatre.findByIdAndUpdate(theatreId, {
-    $inc: {
-      totalScreens: 1,
-      totalSeats: totalSeats
+  } catch (err) {
+    if (err.code === 11000) {
+      throw new ApiError(409, "Screen with this name already exists in the theatre");
     }
-  });
-
-  return screen;
+    throw err;
+  }
 };
 
-export const getScreensByTheatreService = (theatreId) => {
-  return Screen.find({ theatreId });
+export const getScreensByTheatreService = (theatreId, page, limit) => {
+  return paginate(Screen, { theatreId }, { page, limit });
 };
+
 
 export const getScreenByIdService = async (id) => {
   const screen = await Screen.findById(id);

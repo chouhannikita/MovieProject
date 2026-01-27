@@ -27,12 +27,17 @@ app.use((err, req, res, next) => {
             message: err.message
         });
     }
+    if (err.name === "CastError") {
+        return res.status(400).json({
+            message: "Invalid ID format"
+        });
+    }
 
     res.status(500).json({
         success: false,
         message: err.message || "Internal server error"
     });
 });
-// app.use(errorHandler);
+
 
 export default app;
