@@ -2,7 +2,7 @@ import Screen from "../models/screen.model.js";
 import ApiError from "../utils/ApiError.js";
 import Theatre from "../models/theatre.model.js";
 import { validateObjectId } from "../utils/validate.js";
-import { paginate } from "../config/pagination.js";
+import mongoose from "mongoose";
 
 export const createScreenService = async (data) => {
   const { theatreId, name, totalSeats } = data;
@@ -35,10 +35,38 @@ export const createScreenService = async (data) => {
   }
 };
 
-export const getScreensByTheatreService = (theatreId, page, limit) => {
-  return paginate(Screen, { theatreId }, { page, limit });
-};
+export const getScreensByTheatreService = async (adminId, page=1, limit=10) => {
+  const skip = (page - 1) * limit;
 
+  return Screen.aggregate([
+    {
+      $lookup: {
+        from: "theatres",
+        localField: "theatreId",
+        foreignField: "_id",
+        as: "theatre"
+      }
+    },
+    { $unwind: "$theatre" },
+    {
+      $match: {
+        "theatre.adminId": new mongoose.Types.ObjectId(adminId)
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        totalSeats: 1,
+        theatreId: "$theatre._id",
+        theatreName: "$theatre.name",
+        createdAt: 1
+      }
+    },
+    { $skip: skip },
+    { $limit: limit }
+  ]);
+};
 
 export const getScreenByIdService = async (id) => {
   const screen = await Screen.findById(id);

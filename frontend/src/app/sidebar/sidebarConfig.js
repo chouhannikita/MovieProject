@@ -20,7 +20,7 @@ import {
     },
     {
       label: "Screens",
-      path: "/admin/screens",
+      path: "/admin/screen",
       icon: EventSeat,
     },
     {

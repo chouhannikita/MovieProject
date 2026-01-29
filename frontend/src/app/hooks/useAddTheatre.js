@@ -1,6 +1,6 @@
 // hooks/useAddTheatre.js
 import { useState } from "react";
-import { addTheatre } from "@/api/theatre.js/theatre";
+import { addTheatre } from "@/api/theatre/theatre";
 import { useSnackbar } from "@/context/SnackbarContext";
 import { useSelector } from "react-redux";
 
@@ -12,7 +12,6 @@ export const useAddTheatre = (onSuccess) => {
     const submit = async (data) => {
         setLoading(true);
         const adminId = auth?.userData?.id;
-        console.log(auth, "===================");
 
         const res = await addTheatre({
             ...data,

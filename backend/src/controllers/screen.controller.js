@@ -20,8 +20,8 @@ export const createScreen = asyncHandler(async (req, res) => {
 });
 
 export const getScreensByTheatre = asyncHandler(async (req, res) => {
-  const { theatreId,page,limit } = req.query;
-  const screens = await getScreensByTheatreService(theatreId,page,limit);
+  const { adminId,page,limit } = req.query;
+  const screens = await getScreensByTheatreService(adminId,page,limit);
 
   res.json(ApiResponse(screens));
 });

@@ -9,7 +9,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import DownloadIcon from "@mui/icons-material/Download";
 import CustomButton from "@/components/custom-button/CustomButton";
 import dynamic from "next/dynamic";
-import { getAdminTheatres } from "@/api/theatre.js/theatre";
+import { getAdminTheatres } from "@/api/theatre/theatre";
 import DataTable from "@/components/datatable/DataTable";
 import { theatreTableColumns } from "../adminConfig";
 

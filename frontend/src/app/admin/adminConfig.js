@@ -113,3 +113,18 @@ export const theatreTableColumns = [
     )
   }
 ];
+
+export const screenTableColumns = [
+  {
+    key: "name",
+    header: "Screen Name"
+  },
+  {
+    key: "totalSeats",
+    header: "Total Seats"
+  },
+  {
+    key: "theatreName",
+    header: "Theatre"
+  }
+];
