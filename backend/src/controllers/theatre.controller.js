@@ -1,169 +1,56 @@
-import Theatre from "../models/theatre.model.js";
-import Admin from "../models/admin.model.js";
+import asyncHandler from "../utils/asyncHandler.js";
+import ApiResponse from "../utils/ApiResponse.js";
+import { requireFields } from "../utils/validate.js";
+import {
+  createTheatreService,
+  getAdminTheatresService,
+  getTheatreByIdService,
+  getAllTheatresService,
+  deleteTheatreService,
+  updateTheatreService
+} from "../services/theatre.service.js";
 
-export const createTheatre = async (req, res) => {
-    try {
-        const adminId = req.body.userId;
+export const createTheatre = asyncHandler(async (req, res) => {
+  requireFields(req.body, ["name", "city", "address"]);
 
-        // 1. Check admin status
-        const admin = await Admin.findById(adminId);
-        if (!admin || admin.status !== "Active") {
-            return res.status(403).json({
-                message: "Admin is not approved to create theatres",
-            });
-        }
+  const theatre = await createTheatreService({
+    adminId: req.body.userId,
+    ...req.body,
+  });
 
-        // 2. Validate input
-        const { name, city, address } = req.body;
-        if (!name || !city || !address) {
-            return res.status(400).json({
-                message: "All fields are required",
-            });
-        }
+  res.status(201).json(
+    ApiResponse(theatre, "Theatre created successfully")
+  );
+});
 
-        // 3. Create theatre
-        const theatre = await Theatre.create({
-            adminId,
-            name,
-            city,
-            address,
-        });
+export const getAdminTheatres = asyncHandler(async (req, res) => {
+  const data = await getAdminTheatresService(req.user.adminId);
 
-        return res.status(201).json({
-            message: "Theatre created successfully",
-            theatre,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to create theatre",
-            error: error.message,
-        });
-    }
-};
+  res.json(ApiResponse(data));
+});
 
-export const getAdminTheatres = async (req, res) => {
-    try {
-        const adminId = req.user.adminId;
+export const getTheatreById = asyncHandler(async (req, res) => {
+  const theatre = await getTheatreByIdService(req.params.id);
 
-        const theatres = await Theatre.find({ adminId })
-            .sort({ createdAt: -1 });
+  res.json(ApiResponse(theatre));
+});
 
-        return res.status(200).json({
-            success: true,
-            data: {
-                page: 1,
-                limit: 10,
-                total: 2,
-                theatres: theatres
-            }
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to fetch theatres",
-            error: error.message,
-        });
-    }
-};
+export const getAllTheatres = asyncHandler(async (req, res) => {
+  const theatres = await getAllTheatresService();
 
-export const getTheatreById = async (req, res) => {
-    try {
-        const theatreId = req.params.id;
+  res.json(ApiResponse(theatres));
+});
 
-        const theatre = await Theatre.findById(theatreId);
-        if (!theatre) {
-            return res.status(404).json({
-                message: "Theatre not found",
-            });
-        }
+export const deleteTheatre = asyncHandler(async (req, res) => {
+  await deleteTheatreService(req.params.id);
 
-        return res.status(200).json({
-            success: true,
-            theatre,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to fetch theatre",
-            error: error.message,
-        });
-    }
-}
+  res.json(ApiResponse(null, "Theatre deleted successfully"));
+});
 
-export const getAllTheatres = async (req, res) => {
-    try {
-        const theatres = await Theatre.find()
-            .sort({ createdAt: -1 });
+export const updateTheatre = asyncHandler(async (req, res) => {
+  requireFields(req.body, ["name", "city", "address"]);
 
-        return res.status(200).json({
-            success: true,
-            data: {
-                page: 1,
-                limit: 10,
-                total: theatres.length,
-                theatres: theatres
-            }
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to fetch theatres",
-            error: error.message,
-        });
-    }
-}
+  const theatre = await updateTheatreService(req.params.id, req.body);
 
-export const deleteTheatre = async (req, res) => {
-    try {
-        const theatreId = req.params.id;
-
-        const theatre = await Theatre.findByIdAndDelete(theatreId);
-        if (!theatre) {
-            return res.status(404).json({
-                message: "Theatre not found",
-            });
-        }
-
-        return res.status(200).json({
-            message: "Theatre deleted successfully",
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to delete theatre",
-            error: error.message,
-        });
-    }
-}
-
-export const updateTheatre = async (req, res) => {
-    try {
-        const theatreId = req.params.id;
-        const { name, city, address } = req.body;
-
-        // Validate input
-        if (!name || !city || !address) {
-            return res.status(400).json({
-                message: "All fields are required",
-            });
-        }
-
-        const theatre = await Theatre.findByIdAndUpdate(
-            theatreId,
-            { name, city, address },
-            { new: true }
-        );
-
-        if (!theatre) {
-            return res.status(404).json({
-                message: "Theatre not found",
-            });
-        }
-
-        return res.status(200).json({
-            message: "Theatre updated successfully",
-            theatre,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: "Failed to update theatre",
-            error: error.message,
-        });
-    }
-};
+  res.json(ApiResponse(theatre, "Theatre updated successfully"));
+});

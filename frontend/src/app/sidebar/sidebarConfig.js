@@ -15,12 +15,12 @@ import {
     },
     {
       label: "Theatres",
-      path: "/admin/theatres",
+      path: "/admin/theatre",
       icon: Movie,
     },
     {
       label: "Screens",
-      path: "/admin/screens",
+      path: "/admin/screen",
       icon: EventSeat,
     },
     {
