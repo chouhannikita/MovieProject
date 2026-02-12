@@ -9,7 +9,7 @@ export const createScreenService = async (data) => {
 
   validateObjectId(theatreId, "theatreId");
 
-  if(totalSeats <= 0 || !Number.isInteger(totalSeats)) {
+  if(totalSeats <= 0 || !Number.isInteger(Number(totalSeats))) {
     throw new ApiError(400, "totalSeats must be a positive number");
   }
 

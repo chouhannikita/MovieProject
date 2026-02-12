@@ -2,7 +2,7 @@
 const { default: apiCall } = require("@/lib/api");
 
 export const addScreen = async (data) => {
-    const res = await apiCall("/theatre/add", "POST", data, { withCredentials: true, });
+    const res = await apiCall("/screen/add", "POST", data, { withCredentials: true, });
     return res;
 }
 

@@ -29,7 +29,6 @@ export default function TheatreMainPage() {
   const fetchTheatres = async () => {
     try {
       const response = await getAdminTheatres();
-      console.log(response);
       setTheatresData(response?.data?.data);
     } catch (error) {
       console.error("Error fetching theatres data:", error);

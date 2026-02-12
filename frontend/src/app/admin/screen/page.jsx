@@ -1,10 +1,5 @@
-import React from 'react'
-import Screen from './Screen'
+import ScreenClient from "./Screen";
 
-const page = () => {
-  return (
-   <Screen/>
-  )
+export default async function ScreenPage() {
+  return <ScreenClient />;
 }
-
-export default page

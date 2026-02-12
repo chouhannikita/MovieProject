@@ -46,7 +46,6 @@ export const BANK_FIELDS = [
   },
 ];
 
-// constants/theatreFormFields.js
 export const theatreFormFields = [
   {
     name: "name",
@@ -128,3 +127,30 @@ export const screenTableColumns = [
     header: "Theatre"
   }
 ];
+
+export const screenFormFields = ({handleScroll,theatreOptions}) => {
+  return (
+    [
+      {
+        name: "name",
+        label: "Screen Name",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "totalSeats",
+        label: "Total Seats",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "theatreId",
+        label: "Theatre",
+        type: "async-select",
+        required: true,
+        options: theatreOptions || [] ,
+        onScroll:handleScroll
+      }
+    ]
+  )
+}

@@ -1,33 +1,35 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import CustomButton from "@/components/custom-button/CustomButton";
 import DataTable from "@/components/datatable/DataTable";
 import { screenTableColumns } from "../adminConfig";
+import AddScreen from "./AddScreen";
 import { getAdminScreen } from "@/api/screen/screen";
+import { useSelector } from "react-redux";
 
-export default function Screen() {
+export default function ScreenClient() {
   const [open, setOpen] = useState(false);
   const [theatresData, setTheatresData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const adminId = useSelector((state) => state.auth.userData?.id);
+
+  const refreshScreens = async () => {
+    setLoading(true);
+    const response = await getAdminScreen(adminId);
+    setTheatresData(response?.data?.data || []);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetchTheatres();
+    refreshScreens();
   }, []);
-
-  const fetchTheatres = async () => {
-    try {
-      const response = await getAdminScreen("69770f9dcb2c49f1600af163");
-      console.log(response);
-      setTheatresData(response?.data?.data);
-    } catch (error) {
-      console.error("Error fetching theatres data:", error);
-    }
-  };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       <div className="w-full">
         <CustomButton
-          fullWidth={true}
+          fullWidth
           onClick={() => setOpen(true)}
           variant="contained"
           buttonText="+ Add Screen"
@@ -41,7 +43,14 @@ export default function Screen() {
       <DataTable
         columns={screenTableColumns}
         data={theatresData}
+        loading={loading}
         rowKey="_id"
+      />
+
+      <AddScreen
+        open={open}
+        handleClose={() => setOpen(false)}
+        onSuccess={refreshScreens}
       />
     </div>
   );
