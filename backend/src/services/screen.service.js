@@ -90,7 +90,18 @@ export const updateScreenService = async (id, data) => {
 };
 
 export const deleteScreenService = async (id) => {
-  const screen = await Screen.findByIdAndDelete(id);
+  const screen = await Screen.findById(id);
   if (!screen) throw new ApiError(404, "Screen not found");
+
+  await Theatre.findByIdAndUpdate(screen.theatreId, {
+    $inc: {
+      totalScreens: -1,
+      totalSeats: -screen.totalSeats
+    }
+  });
+
+  await screen.deleteOne();
+
   return screen;
 };
+

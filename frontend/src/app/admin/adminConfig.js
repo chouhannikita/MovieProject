@@ -125,6 +125,10 @@ export const screenTableColumns = [
   {
     key: "theatreName",
     header: "Theatre"
+  },
+  {
+    key:"actions",
+    header: "Action"
   }
 ];
 
