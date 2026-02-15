@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const DataTable = ({ columns, data, rowKey, loading }) => {
+const DataTable = ({ columns, data, rowKey, loading,actionsUI }) => {
   return (
     <TableContainer component={Paper}>
       {loading ? (
@@ -40,6 +40,7 @@ const DataTable = ({ columns, data, rowKey, loading }) => {
               <TableRow key={row[rowKey]}>
                 {columns.map((col) => (
                   <TableCell key={col.key}>
+                    {col.key === "actions"  ? actionsUI(row) : <></>}
                     {col.render ? col.render(row[col.key], row) : row[col.key]}
                   </TableCell>
                 ))}
@@ -63,6 +64,7 @@ DataTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object).isRequired,
   rowKey: PropTypes.string.isRequired,
   loading: PropTypes.bool,
+  actionsUI: PropTypes.func
 };
 
 export default DataTable;

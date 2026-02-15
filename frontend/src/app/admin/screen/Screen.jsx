@@ -5,14 +5,19 @@ import CustomButton from "@/components/custom-button/CustomButton";
 import DataTable from "@/components/datatable/DataTable";
 import { screenTableColumns } from "../adminConfig";
 import AddScreen from "./AddScreen";
-import { getAdminScreen } from "@/api/screen/screen";
+import { deleteAdminScreen, getAdminScreen } from "@/api/screen/screen";
 import { useSelector } from "react-redux";
+import { Box } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { useSnackbar } from "@/context/SnackbarContext";
 
 export default function ScreenClient() {
   const [open, setOpen] = useState(false);
   const [theatresData, setTheatresData] = useState([]);
   const [loading, setLoading] = useState(false);
   const adminId = useSelector((state) => state.auth.userData?.id);
+  const { showSnackbar } = useSnackbar();
 
   const refreshScreens = async () => {
     setLoading(true);
@@ -24,6 +29,30 @@ export default function ScreenClient() {
   useEffect(() => {
     refreshScreens();
   }, []);
+
+  const handleDelete = async (selectedScreen) => {
+    console.log(selectedScreen._id, "pppp");
+    const id = selectedScreen._id;
+    const res = await deleteAdminScreen(id);
+    if (res?.data?.success) {
+      refreshScreens();
+      showSnackbar("Screen deleted successfully", "success");
+    } else {
+      showSnackbar(
+        res?.response?.data?.message || "Failed to delete screen",
+        "error"
+      );
+    }
+  };
+
+  const actionsUI = (row) => {
+    return (
+      <Box sx={{ display: "flex", alignContent: "center" }}>
+        <EditIcon color="secondary" />
+        <DeleteForeverIcon color="error" onClick={() => handleDelete(row)} />
+      </Box>
+    );
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
@@ -45,6 +74,7 @@ export default function ScreenClient() {
         data={theatresData}
         loading={loading}
         rowKey="_id"
+        actionsUI={actionsUI}
       />
 
       <AddScreen
