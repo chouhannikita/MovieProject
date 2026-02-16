@@ -12,7 +12,11 @@ export const createMovie = asyncHandler(async (req, res) => {
 });
 
 export const getMovies = async (req, res) => {
-    const movies = await movieService.getAllMovies(req.tenantId);
+    const adminId = req.query.adminId;
+    if (!adminId) {
+        return res.status(400).json({ message: "adminId query parameter is required" });
+    }
+    const movies = await movieService.getAllMovies(adminId);
     res.json(movies);
 };
 
@@ -24,16 +28,17 @@ export const getMovie = async (req, res) => {
     res.json(movie);
 };
 
-export const updateMovie = async (req, res) => {
+export const updateMovie = asyncHandler(async (req, res) => {
+    requireFields(req.body, ["title", "duration", "adminId"]);
     const movie = await movieService.updateMovie(
-        req.params.id,
-        req.tenantId,
+        req.query.id,
+        req.body.adminId,
         req.body
     );
-    res.json(movie);
-};
+    res.json(ApiResponse(movie, "movie updated successfully"));
+});
 
-export const deleteMovie = async (req, res) => {
-    await movieService.deleteMovie(req.params.id, req.tenantId);
-    res.json({ message: "Movie removed" });
-};
+export const deleteMovie = asyncHandler(async (req, res) => {
+    const movie = await movieService.deleteMovie(req.query.id, req.body.adminId);
+    res.json(ApiResponse(movie, "Movie removed successfully"));
+});
