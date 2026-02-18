@@ -12,6 +12,8 @@ const INITIAL_VALUES = {
   title: "",
   duration: "",
   posterUrl: {},
+  genre: [],
+  language: [],
 };
 
 const AddMovie = ({ open, handleClose, onSuccess }) => {
@@ -28,6 +30,9 @@ const AddMovie = ({ open, handleClose, onSuccess }) => {
     formData.append("duration", duration);
     formData.append("posterUrl", posterUrl);
     formData.append("adminId", adminId);
+    formData.append("genre", JSON.stringify(values.genre));
+    formData.append("language", JSON.stringify(values.language));
+    formData.append("description", values.description || "");
     setLoading(true);
     const res = await addMovie(formData);
 

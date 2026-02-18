@@ -12,8 +12,14 @@ const movieSchema = new Schema(
     title: { type: String, required: true },
     description: String,
     duration: { type: Number, required: true }, // minutes
-    genre: [String],
-    language: String,
+    genre: [{
+      type: String,
+      enum: ["Action", "Comedy", "Drama", "Thriller", "Sci-Fi", "Romance"]
+    }],
+    language: [{
+      type: String,
+      enum: ["English", "Hindi", "Tamil", "Telugu", "Malayalam"]
+    }],
     releaseDate: Date,
     posterUrl: String,
 

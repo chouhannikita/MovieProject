@@ -1,5 +1,19 @@
-import { TextField, MenuItem, Box, Autocomplete } from "@mui/material";
+import { TextField, MenuItem, Box, Autocomplete, Chip } from "@mui/material";
 import PropTypes from "prop-types";
+
+const normalizeOption = (option) => {
+  if (typeof option === "object" && option !== null) {
+    return {
+      label: option.label,
+      value: option.value,
+    };
+  }
+
+  return {
+    label: option,
+    value: option,
+  };
+};
 
 const DynamicForm = ({ fields, values, onChange }) => {
   return (
@@ -8,11 +22,12 @@ const DynamicForm = ({ fields, values, onChange }) => {
         if (field.type === "async-select") {
           return (
             <Autocomplete
+              required={field.required}
               key={field.name}
-              options={field.options}
+              options={field.options || []}
               getOptionLabel={(opt) => opt.label}
               value={
-                field.options.find((o) => o.value === values[field.name]) ||
+                (field.options || []).find((o) => o.value === values[field.name]) ||
                 null
               }
               onChange={(e, val) =>
@@ -31,14 +46,73 @@ const DynamicForm = ({ fields, values, onChange }) => {
           );
         }
 
+        if (field.type === "multiselect") {
+          const options = (field.options || []).map(normalizeOption);
+          const selectedValues = Array.isArray(values[field.name])
+            ? values[field.name]
+            : [];
+          const selectedOptions = options.filter((option) =>
+            selectedValues.includes(option.value),
+          );
+
+          return (
+            <Autocomplete
+              key={field.name}
+              multiple
+              options={options}
+              value={selectedOptions}
+              getOptionLabel={(opt) => opt.label}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              onChange={(e, selected) =>
+                onChange({
+                  target: {
+                    name: field.name,
+                    value: selected.map((item) => item.value),
+                  },
+                })
+              }
+              renderTags={(tagValue, getTagProps) =>
+                tagValue.map((option, index) => (
+                  <Chip
+                    {...getTagProps({ index })}
+                    key={`${field.name}-${option.value}`}
+                    label={option.label}
+                    size="small"
+                  />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  name={field.name}
+                  label={field.label}
+                  required={field.required}
+                  fullWidth
+                />
+              )}
+            />
+          );
+        }
+
         if (field.type === "select") {
           return (
-            <TextField key={field.name} select {...field}>
-              {field.options.map((opt) => (
-                <MenuItem key={opt} value={opt}>
-                  {opt}
-                </MenuItem>
-              ))}
+            <TextField
+              key={field.name}
+              select
+              {...field}
+              value={values[field.name] || ""}
+              required={field.required}
+              onChange={onChange}
+              fullWidth
+            >
+              {(field.options || []).map((opt) => {
+                const option = normalizeOption(opt);
+                return (
+                  <MenuItem key={option.value} value={option.value || ""}>
+                    {option.label}
+                  </MenuItem>
+                );
+              })}
             </TextField>
           );
         }
@@ -49,15 +123,19 @@ const DynamicForm = ({ fields, values, onChange }) => {
             name={field.name}
             onChange={onChange}
             key={field.name}
+            required={field.required}
           />
         ) : (
           <TextField
-            type="text"
+            type={field.type || "text"}
+            multiline={field.multiline || false}
+            rows={field.rows || 1}
             name={field.name}
             label={field.label}
-            value={values[field.name]}
+            value={values[field.name || ""] || ""}
             onChange={onChange}
             key={field.name}
+            required={field.required}
             fullWidth
           />
         );
@@ -74,7 +152,7 @@ DynamicForm.propTypes = {
       type: PropTypes.string,
       options: PropTypes.array,
       onScroll: PropTypes.func,
-    })
+    }),
   ).isRequired,
   values: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,

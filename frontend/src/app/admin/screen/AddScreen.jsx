@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "@/app/hooks/useForm";
 import DynamicForm from "@/components/dynamic-form/DynamicForm";
 import Modal from "@/components/model/Model";
@@ -11,58 +11,66 @@ import { useSnackbar } from "@/context/SnackbarContext";
 const INITIAL_VALUES = {
   name: "",
   totalSeats: "",
+  theatreId: "",
 };
 
-const AddScreen = ({ open, handleClose,onSuccess }) => {
+const AddScreen = ({ open, handleClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [loadingTheatres, setLoadingTheatres] = useState(false);
   const [theatres, setTheatres] = useState([]);
   const { values, handleChange, resetForm } = useForm(INITIAL_VALUES);
   const { showSnackbar } = useSnackbar();
 
+  const loadTheatres = useCallback(async () => {
+    setLoadingTheatres(true);
+    try {
+      const res = await getAdminTheatres();
+      const data = (res?.data?.data || []).map((d) => ({
+        label: d.name,
+        value: d._id,
+      }));
+      setTheatres(data);
+    } catch (error) {
+      showSnackbar("Failed to load theatres", "error");
+    } finally {
+      setLoadingTheatres(false);
+    }
+  }, [showSnackbar]);
+
   useEffect(() => {
-    loadTheatres();
-  }, []);
+    if (open) {
+      loadTheatres();
+    }
+  }, [open, loadTheatres]);
 
-  const loadTheatres = async () => {
-    const res = await getAdminTheatres({ page, limit: 10 });
-    const data = res?.data?.data?.map((d) => ({
-      label: d.name,
-      value: d._id,
-    }));
-    setTheatres((prev) => {
-      const map = new Map();
-
-      [...prev, ...data].forEach((item) => {
-        map.set(item.value, item);
-      });
-
-      return Array.from(map.values());
-    });
-
-    setPage((p) => p + 1);
-  };
 
   const handleScroll = (e) => {
+    if (loadingTheatres) return;
     const listbox = e.currentTarget;
     if (listbox.scrollTop + listbox.clientHeight >= listbox.scrollHeight - 10) {
-      loadTheatres();
+      // Backend currently returns full theatre list for admin in one request.
+      // Keeping this for compatibility with async-select signature.
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await addScreen(values);
-    if (res?.data?.success) {
-      showSnackbar("Screen added successfully", "success");
-      resetForm();
-      handleClose();
-      onSuccess()
-    } else {
-      showSnackbar(
-        res?.response?.data?.message || "Failed to add screen",
-        "error"
-      );
+    setLoading(true);
+    try {
+      const res = await addScreen(values);
+      if (res?.data?.success) {
+        showSnackbar("Screen added successfully", "success");
+        resetForm();
+        handleClose();
+        onSuccess();
+      } else {
+        showSnackbar(
+          res?.response?.data?.message || "Failed to add screen",
+          "error"
+        );
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,6 +95,7 @@ const AddScreen = ({ open, handleClose,onSuccess }) => {
 AddScreen.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func,
 };
 
 export default AddScreen;

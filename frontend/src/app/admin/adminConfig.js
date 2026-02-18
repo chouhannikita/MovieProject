@@ -179,6 +179,33 @@ export const movieFormFields = () => {
         label: "Poster",
         type: "file",
       },
+      {
+        name: "genre",
+        label: "Genre",
+        type: "multiselect",
+        options: genreOptions,
+      },
+      {
+        name: "language",
+        label: "Language",
+        type: "multiselect",
+        options: languageOptions,
+      },
+      {
+        name: "releaseDate",
+        label: "Release Date",
+        type: "date",
+      },
+      {
+        name: "description",
+        label: "Description",
+        type: "text",
+        multiline: true,
+        rows: 3,
+      }
     ]
   )
 }
+
+export const genreOptions = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance"]
+export const languageOptions = ["English", "Hindi", "Tamil", "Telugu", "Malayalam"]
