@@ -1,10 +1,12 @@
 import { Movie } from "../models/movie.model.js";
 import ApiError from "../utils/ApiError.js";
+import { uploadCloudinaryImage } from "../utils/Cloudinary.js";
 import { validateObjectId } from "../utils/validate.js";
 
-export const createMovie = async (data) => {
+export const createMovie = async (data, filePath) => {
   try {
-    const movie = await Movie.create({ ...data });
+    const resultUrl = await uploadCloudinaryImage(filePath)
+    const movie = await Movie.create({ ...data, posterUrl: resultUrl.secure_url });
     return movie;
   } catch (err) {
     if (err.code === 11000) {

@@ -127,12 +127,12 @@ export const screenTableColumns = [
     header: "Theatre"
   },
   {
-    key:"actions",
+    key: "actions",
     header: "Action"
   }
 ];
 
-export const screenFormFields = ({handleScroll,theatreOptions}) => {
+export const screenFormFields = ({ handleScroll, theatreOptions }) => {
   return (
     [
       {
@@ -152,9 +152,33 @@ export const screenFormFields = ({handleScroll,theatreOptions}) => {
         label: "Theatre",
         type: "async-select",
         required: true,
-        options: theatreOptions || [] ,
-        onScroll:handleScroll
+        options: theatreOptions || [],
+        onScroll: handleScroll
       }
+    ]
+  )
+}
+
+export const movieFormFields = () => {
+  return (
+    [
+      {
+        name: "title",
+        label: "Movie Name",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "duration",
+        label: "Duration",
+        type: "text",
+        required: true,
+      },
+      {
+        name: "posterUrl",
+        label: "Poster",
+        type: "file",
+      },
     ]
   )
 }

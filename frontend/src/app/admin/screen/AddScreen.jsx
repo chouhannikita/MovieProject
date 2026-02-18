@@ -69,10 +69,10 @@ const AddScreen = ({ open, handleClose,onSuccess }) => {
   return (
     <Modal
       open={open}
-      title="Add Theatre"
+      title="Add Screen"
       onClose={handleClose}
       onSubmit={handleSubmit}
-      submitText="Add Theatre"
+      submitText="Add Screen"
       loading={loading}
     >
       <DynamicForm

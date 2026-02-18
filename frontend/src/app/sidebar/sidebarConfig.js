@@ -24,6 +24,11 @@ import {
       icon: EventSeat,
     },
     {
+      label: "Movies",
+      path: "/admin/movie",
+      icon: EventSeat,
+    },
+    {
       label: "Shows",
       path: "/admin/shows",
       icon: Movie,

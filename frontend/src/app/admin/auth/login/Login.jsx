@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button, Typography, CircularProgress, Paper } from "@mui/material";
 import FormInput from "@/components/Form-Input/FormInput";
-import { loginAdminApi } from "@/api/login.js/login";
+import { loginAdminApi } from "@/api/login/login";
 import { useSnackbar } from "@/context/SnackbarContext";
 import { useRouter } from "next/navigation";
 import { setAdmin } from "@/redux/authSlice";

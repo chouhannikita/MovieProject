@@ -9,7 +9,7 @@ export async function apiCall(endpoint, method = "GET", data = null, options = {
       method,
       data,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": options?.contentType || "application/json",
       },
       withCredentials: options.withCredentials || false,
       params: options.params || {},

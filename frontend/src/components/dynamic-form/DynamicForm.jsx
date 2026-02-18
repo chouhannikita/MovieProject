@@ -5,14 +5,16 @@ const DynamicForm = ({ fields, values, onChange }) => {
   return (
     <Box display="flex" flexDirection="column" gap={2}>
       {fields.map((field) => {
-
         if (field.type === "async-select") {
           return (
             <Autocomplete
               key={field.name}
               options={field.options}
               getOptionLabel={(opt) => opt.label}
-              value={field.options.find(o => o.value === values[field.name]) || null}
+              value={
+                field.options.find((o) => o.value === values[field.name]) ||
+                null
+              }
               onChange={(e, val) =>
                 onChange({
                   target: {
@@ -41,13 +43,21 @@ const DynamicForm = ({ fields, values, onChange }) => {
           );
         }
 
-        return (
+        return field.type === "file" ? (
           <TextField
+            type="file"
+            name={field.name}
+            onChange={onChange}
             key={field.name}
+          />
+        ) : (
+          <TextField
+            type="text"
             name={field.name}
             label={field.label}
             value={values[field.name]}
             onChange={onChange}
+            key={field.name}
             fullWidth
           />
         );
