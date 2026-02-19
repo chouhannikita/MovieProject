@@ -132,6 +132,21 @@ export const screenTableColumns = [
   }
 ];
 
+export const movieTableColumns = [
+  {
+    key: "title",
+    header: "Title"
+  },
+  {
+    key: "duration",
+    header: "Duration"
+  },
+  {
+    key: "actions",
+    header: "Action"
+  }
+];
+
 export const screenFormFields = ({ handleScroll, theatreOptions }) => {
   return (
     [
@@ -171,7 +186,7 @@ export const movieFormFields = () => {
       {
         name: "duration",
         label: "Duration",
-        type: "text",
+        type: "time",
         required: true,
       },
       {

@@ -30,8 +30,13 @@ const AddMovie = ({ open, handleClose, onSuccess }) => {
     formData.append("duration", duration);
     formData.append("posterUrl", posterUrl);
     formData.append("adminId", adminId);
-    formData.append("genre", JSON.stringify(values.genre));
-    formData.append("language", JSON.stringify(values.language));
+    values.genre.forEach((g) => {
+      formData.append("genre", g);
+    });
+
+    values.language.forEach((l) => {
+      formData.append("language", l);
+    });
     formData.append("description", values.description || "");
     setLoading(true);
     const res = await addMovie(formData);
@@ -44,7 +49,7 @@ const AddMovie = ({ open, handleClose, onSuccess }) => {
     } else {
       showSnackbar(
         res?.response?.data?.message || "Failed to add movie",
-        "error"
+        "error",
       );
     }
     setLoading(false);

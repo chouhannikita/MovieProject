@@ -31,7 +31,6 @@ export default function ScreenClient() {
   }, []);
 
   const handleDelete = async (selectedScreen) => {
-    console.log(selectedScreen._id, "pppp");
     const id = selectedScreen._id;
     const res = await deleteAdminScreen(id);
     if (res?.data?.success) {

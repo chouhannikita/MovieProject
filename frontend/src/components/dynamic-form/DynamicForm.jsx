@@ -1,5 +1,6 @@
 import { TextField, MenuItem, Box, Autocomplete, Chip } from "@mui/material";
 import PropTypes from "prop-types";
+import DurationField from "./DurationField";
 
 const normalizeOption = (option) => {
   if (typeof option === "object" && option !== null) {
@@ -27,8 +28,9 @@ const DynamicForm = ({ fields, values, onChange }) => {
               options={field.options || []}
               getOptionLabel={(opt) => opt.label}
               value={
-                (field.options || []).find((o) => o.value === values[field.name]) ||
-                null
+                (field.options || []).find(
+                  (o) => o.value === values[field.name],
+                ) || null
               }
               onChange={(e, val) =>
                 onChange({
@@ -62,7 +64,9 @@ const DynamicForm = ({ fields, values, onChange }) => {
               options={options}
               value={selectedOptions}
               getOptionLabel={(opt) => opt.label}
-              isOptionEqualToValue={(option, value) => option.value === value.value}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
               onChange={(e, selected) =>
                 onChange({
                   target: {
@@ -114,6 +118,22 @@ const DynamicForm = ({ fields, values, onChange }) => {
                 );
               })}
             </TextField>
+          );
+        }
+
+        if (field.type === "time") {
+          return (
+            <DurationField
+              key={field.name}
+              onChange={(val) =>
+                onChange({
+                  target: {
+                    name: field.name,
+                    value: val,
+                  },
+                })
+              }
+            />
           );
         }
 
