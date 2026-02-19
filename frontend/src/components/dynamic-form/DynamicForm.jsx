@@ -125,6 +125,7 @@ const DynamicForm = ({ fields, values, onChange }) => {
           return (
             <DurationField
               key={field.name}
+              value={values[field.name]}
               onChange={(val) =>
                 onChange({
                   target: {
@@ -133,6 +134,23 @@ const DynamicForm = ({ fields, values, onChange }) => {
                   },
                 })
               }
+            />
+          );
+        }
+
+        if (field.type === "textarea") {
+          return (
+            <TextField
+              type="text"
+              multiline
+              rows={field.rows || 3}
+              name={field.name}
+              label={field.label}
+              value={values[field.name] || ""}
+              onChange={onChange}
+              key={field.name}
+              required={field.required}
+              fullWidth
             />
           );
         }
@@ -152,7 +170,7 @@ const DynamicForm = ({ fields, values, onChange }) => {
             rows={field.rows || 1}
             name={field.name}
             label={field.label}
-            value={values[field.name || ""] || ""}
+            value={values[field.name] || ""}
             onChange={onChange}
             key={field.name}
             required={field.required}

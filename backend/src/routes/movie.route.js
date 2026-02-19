@@ -7,6 +7,6 @@ const movieRouter = Router()
 movieRouter.post("/add", adminAuth, upload.single("posterUrl"), createMovie)
 movieRouter.get("/", adminAuth, getMovies)
 movieRouter.put("/update", adminAuth, updateMovie)
-movieRouter.delete("/delete", deleteMovie)
+movieRouter.delete("/delete", adminAuth, deleteMovie)
 
 export default movieRouter;

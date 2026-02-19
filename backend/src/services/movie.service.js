@@ -5,8 +5,13 @@ import { validateObjectId } from "../utils/validate.js";
 
 export const createMovie = async (data, filePath) => {
   try {
-    const resultUrl = await uploadCloudinaryImage(filePath)
-    const movie = await Movie.create({ ...data, posterUrl: resultUrl.secure_url });
+    const uploadResult = filePath
+      ? await uploadCloudinaryImage(filePath)
+      : null;
+    const movie = await Movie.create({
+      ...data,
+      ...(uploadResult ? { posterUrl: uploadResult.secure_url } : {}),
+    });
     return movie;
   } catch (err) {
     if (err.code === 11000) {

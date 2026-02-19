@@ -40,8 +40,11 @@ const DataTable = ({ columns, data, rowKey, loading,actionsUI }) => {
               <TableRow key={row[rowKey]}>
                 {columns.map((col) => (
                   <TableCell key={col.key}>
-                    {col.key === "actions"  ? actionsUI(row) : <></>}
-                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                    {col.key === "actions"
+                      ? actionsUI?.(row)
+                      : col.render
+                        ? col.render(row[col.key], row)
+                        : row[col.key]}
                   </TableCell>
                 ))}
               </TableRow>

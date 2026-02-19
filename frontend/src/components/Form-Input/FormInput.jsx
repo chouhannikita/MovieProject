@@ -13,6 +13,9 @@ const FormInput = ({
   required=false,
   name="",
   slotProps={},
+  placeholder = "",
+  multiline = false,
+  rows = 1,
 }) => {
   return (
     <div className="mb-2">
@@ -28,13 +31,16 @@ const FormInput = ({
         type={type}
         required={required}
         name={name}
+        placeholder={placeholder}
+        multiline={multiline}
+        rows={rows}
         slotProps={{ htmlInput: slotProps }} // Updated line
       />
     </div>
   );
 };
 
-FormInput.propType = {
+FormInput.propTypes = {
   label: PropTypes.string,
   variant: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -44,6 +50,9 @@ FormInput.propType = {
   required: PropTypes.bool,
   name: PropTypes.string,
   slotProps: PropTypes.object,
+  placeholder: PropTypes.string,
+  multiline: PropTypes.bool,
+  rows: PropTypes.number,
 }
 
 export default FormInput;

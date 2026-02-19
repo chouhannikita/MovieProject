@@ -27,8 +27,10 @@ export default function ScreenClient() {
   };
 
   useEffect(() => {
-    refreshScreens();
-  }, []);
+    if (adminId) {
+      refreshScreens();
+    }
+  }, [adminId]);
 
   const handleDelete = async (selectedScreen) => {
     const id = selectedScreen._id;

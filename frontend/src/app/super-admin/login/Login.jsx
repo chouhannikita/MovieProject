@@ -24,7 +24,6 @@ export default function SuperAdminLogin() {
 
     const payload = { ...formData, role: "superadmin" };
     const res = await superAdminRegisterApi(payload);
-    console.log(res);
     if (res.status === 200) {
       showSnackbar("Login successful!", "success");
       router.push("/super-admin/dashboard");

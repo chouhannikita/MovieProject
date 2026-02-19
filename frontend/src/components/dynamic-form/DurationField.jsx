@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TextField, Box, Typography } from "@mui/material";
 
-const DurationField = ({ onChange }) => {
+const DurationField = ({ onChange, value }) => {
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const onChangeRef = useRef(onChange);
@@ -9,6 +9,22 @@ const DurationField = ({ onChange }) => {
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useEffect(() => {
+    if (value === undefined || value === null || Number.isNaN(value)) {
+      return;
+    }
+    const total = Number(value);
+    const nextHours = String(Math.floor(total / 60));
+    const nextMinutes = String(total % 60);
+
+    if (hours !== nextHours) {
+      setHours(nextHours);
+    }
+    if (minutes !== nextMinutes) {
+      setMinutes(nextMinutes);
+    }
+  }, [value, hours, minutes]);
 
   useEffect(() => {
     const totalMinutes =

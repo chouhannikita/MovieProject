@@ -14,7 +14,7 @@ export const createTheatre = asyncHandler(async (req, res) => {
   requireFields(req.body, ["name", "city", "address"]);
 
   const theatre = await createTheatreService({
-    adminId: req.body.userId,
+    adminId: req.user?.adminId || req.body.userId,
     ...req.body,
   });
 
@@ -30,7 +30,8 @@ export const getAdminTheatres = asyncHandler(async (req, res) => {
 });
 
 export const getTheatreById = asyncHandler(async (req, res) => {
-  const theatre = await getTheatreByIdService(req.params.id);
+  const theatreId = req.params.id || req.query.id || req.body.id;
+  const theatre = await getTheatreByIdService(theatreId);
 
   res.json(ApiResponse(theatre));
 });
@@ -42,7 +43,8 @@ export const getAllTheatres = asyncHandler(async (req, res) => {
 });
 
 export const deleteTheatre = asyncHandler(async (req, res) => {
-  await deleteTheatreService(req.params.id);
+  const theatreId = req.params.id || req.query.id || req.body.id;
+  await deleteTheatreService(theatreId);
 
   res.json(ApiResponse(null, "Theatre deleted successfully"));
 });
@@ -50,7 +52,8 @@ export const deleteTheatre = asyncHandler(async (req, res) => {
 export const updateTheatre = asyncHandler(async (req, res) => {
   requireFields(req.body, ["name", "city", "address"]);
 
-  const theatre = await updateTheatreService(req.params.id, req.body);
+  const theatreId = req.params.id || req.query.id || req.body.id;
+  const theatre = await updateTheatreService(theatreId, req.body);
 
   res.json(ApiResponse(theatre, "Theatre updated successfully"));
 });

@@ -29,7 +29,6 @@ const Movie = () => {
     setLoading(true);
     try {
       const res = await getAdminMovies(adminId);
-      console.log("Movies fetched:", res?.data);
       const updatedMovies = res?.data?.map((movie) => ({
         ...movie,
         duration: durationInHoursMinutes(movie.duration),
@@ -45,7 +44,7 @@ const Movie = () => {
 
   useEffect(() => {
     fetchMovies();
-  }, []);
+  }, [fetchMovies]);
 
   const handleDelete = async (selectedMovie) => {
     const id = selectedMovie._id;

@@ -7,7 +7,7 @@ export const createMovie = asyncHandler(async (req, res) => {
     requireFields(req.body, ["title", "duration", "adminId"]);
     const movie = await movieService.createMovie(
         req.body,
-        req.file.path
+        req.file?.path
     );
     res.status(201).json(ApiResponse(movie, "Movie added successfully"));
 });
