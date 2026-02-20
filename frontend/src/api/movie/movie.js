@@ -6,7 +6,12 @@ export const addMovie = async (data) => {
 }
 
 export const getAdminMovies = async (id) => {
-    const res = await apiCall("/movie", "GET", null, { withCredentials: true, params: { adminId: id } });
+    const res = await apiCall("/movie", "GET", null, { withCredentials: true, params: {} });
+    return res;
+}
+
+export const getMovieById = async (id) => {
+    const res = await apiCall(`/movie/${id}`, "GET", null, { withCredentials: true });
     return res;
 }
 

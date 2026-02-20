@@ -13,7 +13,7 @@ export const createMovie = asyncHandler(async (req, res) => {
 });
 
 export const getMovies = async (req, res) => {
-    const adminId = req.query.adminId;
+    const adminId = req.user.adminId;
     if (!adminId) {
         return res.status(400).json({ message: "adminId query parameter is required" });
     }
@@ -24,8 +24,7 @@ export const getMovies = async (req, res) => {
 export const getMovie = async (req, res) => {
     const movie = await movieService.getMovieById(
         req.params.id,
-        req.tenantId
-    );
+        req.user.adminId);
     res.json(movie);
 };
 

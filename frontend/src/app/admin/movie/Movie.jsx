@@ -12,8 +12,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { durationInHoursMinutes } from "../../config";
+import { useRouter } from "next/navigation";
 
 const Movie = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,12 +63,15 @@ const Movie = () => {
   };
 
   const handleEdit = async (selectedMovie) => {};
+  const handleView = (selectedMovie) => {
+    router.push(`/admin/movie/${selectedMovie._id}`);
+  };
   const actionsUI = (row) => {
     return (
       <Box sx={{ display: "flex", alignContent: "center" }}>
         <EditIcon color="secondary" onClick={() => handleEdit(row)} />
         <DeleteForeverIcon color="error" onClick={() => handleDelete(row)} />
-        <RemoveRedEyeIcon sx={{ color: "#076cd0" }} onClick={() => {}} />
+        <RemoveRedEyeIcon sx={{ color: "#076cd0" }} onClick={() => handleView(row)} />
       </Box>
     );
   };
