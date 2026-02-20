@@ -17,7 +17,7 @@ export default async function MoviePage({ params }) {
   const { data: movie, error } = await getMovieByIdServer(id);
 
   if (error) {
-    return <div className="p-6 text-red-600">{error}</div>;
+    return <div className="p-6 text-red-600">{error}</div>
   }
 
   if (!movie) {
